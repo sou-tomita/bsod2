@@ -109,7 +109,7 @@ def get_qc_df(
     n = pd.to_numeric(df["N"], errors="coerce") >= 4
 
     condition = st & re & sonden & gf & n
-    df = df[condition]
+    df = df[condition].copy()
     df = df.reset_index(drop=True)
 
     # ---- time control

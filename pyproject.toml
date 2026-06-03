@@ -4,20 +4,31 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bsod2"
-version = "0.2.1"
-description = "package for reading radiosonde data"
+version = "1.0.0"
+description = "package for reading and plotting radiosonde data"
 authors = [{name = "So Tomita"}]
 readme = "README.md"
 license = "GPL-3.0-only"
 license-files = ["LICENSE"]
-requires-python = ">=3.14"
+keywords = ["meteorology", "weather", "radiosonde"]
+requires-python = ">=3.11"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+]
 dependencies = [
-    "numpy==2.4.3",
-    "pandas==3.0.2",
-    "metpy==1.7.1",
-    "tqdm == 4.67.3",
-    "xarray == 2026.4.0",
+    "numpy>=1.23.5",
+    "pandas>=2.0.0",
+    "metpy>=1.7.1",
+    "tqdm>=4.65.1",
+    "xarray>=2023.6.0",
 ]
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[project.scripts]
+bsod2 = "bsod2.cli:main"

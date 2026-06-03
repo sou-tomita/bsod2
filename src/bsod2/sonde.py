@@ -3,6 +3,7 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 import io
+import metpy.calc as mpcalc
 from metpy.units import units
 from pathlib import Path
 import pandas as pd
@@ -11,6 +12,7 @@ import warnings
 from textwrap import dedent
 
 from .qc import get_qc_df, interp_df
+from .plot import plot_tmp_emagram
 
 
 @dataclass(frozen=True)
@@ -242,6 +244,46 @@ class Sonde:
 
         return self.df["WS"].values * units.meter / units.second
 
+    @property
+    def u(self) -> pint.Quantity:
+        """u component of wind
+
+        Returns
+        -------
+        pint.Quantity
+            u component of wind with units("m/s")
+        """
+
+        u, _ = mpcalc.wind_components(self.ws, self.wd)
+
+        return u.to("m/s")
+
+    @property
+    def v(self) -> pint.Quantity:
+        """v component of wind
+
+        Returns
+        -------
+        pint.Quantity
+            v component of wind with units("m/s")
+        """
+
+        _, v = mpcalc.wind_components(self.ws, self.wd)
+
+        return v.to("m/s")
+
+    @property
+    def td(self) -> pint.Quantity:
+        """dew point temperature
+
+        Returns
+        -------
+        pint.Quantity
+            dew point temperature with units("degC")
+        """
+
+        return mpcalc.dewpoint_from_relative_humidity(self.t, self.rh).to("degC")
+
     def __len__(self) -> int:
 
         return len(self.df)
@@ -265,6 +307,27 @@ class Sonde:
             save_df = self.df
         save_df.to_csv(fpath, index=False)
 
+    def plot_emagram(self, save_dir: Path) -> None:
+        """plot emagram
+
+        Parameters
+        ----------
+        save_dir : Path
+            fig dir
+        """
+
+        save_dir.mkdir(parents=True, exist_ok=True)
+        save_fpath = save_dir / Path(f"{self.sonde_no}.png")
+        plot_tmp_emagram(
+            p=self.p,
+            t=self.t,
+            td=self.td,
+            u=self.u,
+            v=self.v,
+            save_fpath=save_fpath,
+            title=f"{self.sonde_no}",
+        )
+
     def __str__(self) -> str:
 
         return f"Sonde(sonde_no={self.sonde_no}, launch_time={self.launch_time}, product_name={self.product_name}, num_records={len(self.df)})"
@@ -277,11 +340,9 @@ class Sonde:
             df = self.df.dropna(subset=["Prs"])
         else:
             df = self.df
-        df["Time"] = df["Time"].dt.strftime("%Y-%m-%d %H:%M:%S")
+        df.loc[:, "Time"] = df["Time"].dt.strftime("%Y-%m-%d %H:%M:%S")
 
-        return dedent(
-            f"""
+        return dedent(f"""
         sonde No={self.sonde_no}, launch time={self.launch_time}, product name={self.product_name}
         {df.head().to_html(float_format="{:.2f}".format)}
-        """
-        ).strip()
+        """).strip()
