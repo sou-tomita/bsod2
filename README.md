@@ -11,6 +11,12 @@
 
 BSoD2 (BalloonScope on Deck 2) is a command line interface and Python package for reading, processing, and plotting radiosonde data.
 
+<p align="center">
+<img src="https://raw.githubusercontent.com/sotomita/bsod2/master/docs/images/emagram.png" alt="emagram" width="200"/>
+<img src="https://raw.githubusercontent.com/sotomita/bsod2/master/docs/images/trj2d.png" alt="RH 2D trajectory" width="200"/><br>
+<img src="https://raw.githubusercontent.com/sotomita/bsod2/master/docs/images/trj3d_animation.gif" alt="RH 3D trajectory" width="400"/>
+</p>
+
 ## Table of Contents <!-- omit in toc -->
 
 - [Installation](#installation)
@@ -24,7 +30,7 @@ BSoD2 (BalloonScope on Deck 2) is a command line interface and Python package fo
     - [Altitude or pressure interpolation](#altitude-or-pressure-interpolation)
     - [Interpolated and combined `xarray.Dataset`](#interpolated-and-combined-xarraydataset)
     - [plot emagram](#plot-emagram)
-  - [Sample scripts](#sample-scripts)
+  - [Sample data and scripts](#sample-data-and-scripts)
   - [License](#license)
 
 ## Installation
@@ -34,7 +40,8 @@ pip install bsod2
 ```
 
 ## Usage
-The only functionality provided by this package is the `bsod2.Sondeset` class, which retrieves radiosonde data ,performs quality control and plot a emagram.
+The only functionality provided by this package is the `bsod2.Sondeset` class, which retrieves radiosonde data ,performs quality control and plot a emagram.      
+A simple usage guide in Japanese is available on Qiita: ([bsod2 ラジオゾンデ観測データ品質管理ツール](https://qiita.com/aoitomita/private/302a19c4236819f310e9)).
 
 ### Command Line Interface
 `bsod2` commannd performs on quality control.
@@ -154,7 +161,9 @@ Data variables:
 ss[0].plot_emagram(save_dir=Path("./"))
 ```
 
-### Sample scripts
+### Sample data and scripts
+[Sample data](https://github.com/sotomita/bsod2/tree/master/sample/Seisuimaru2407) was observed in Seisui-maru 2407 cruise
+(2024年度　三重大学　陸海空・環境科学実習).  
 
 See [sample/sample.md](sample/sample.md) for sample scripts.
 
