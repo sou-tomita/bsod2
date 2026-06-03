@@ -1,4 +1,4 @@
-# bsod2
+# bsod2 <!-- omit in toc -->
 
 <p>
 <img src="https://img.shields.io/pypi/v/bsod2">
@@ -10,6 +10,20 @@
 
 BSoD2(BalloonScope on Deck 2) is a package in Python for reading radiosonde data.
 
+## Table of Contents <!-- omit in toc -->
+
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Basic `Sondeset` construction and methods](#basic-sondeset-construction-and-methods)
+  - [Accessors for individual data items](#accessors-for-individual-data-items)
+  - [Get Number of profiles](#get-number-of-profiles)
+  - [Save as CSV](#save-as-csv)
+  - [Altitude or pressure interpolation](#altitude-or-pressure-interpolation)
+  - [Interpolated and combined `xarray.Dataset`](#interpolated-and-combined-xarraydataset)
+  - [plot emagram](#plot-emagram)
+- [Sample scripts](#sample-scripts)
+- [License](#license)
+
 ## Installation
 This package can be installed from [PyPI](https://pypi.org/project/bsod2/).
 ```
@@ -17,7 +31,7 @@ pip install bsod2
 ```
 
 ## Usage
-The only functionality provided by this package is the `bsod2.Sondeset` class, which retrieves radiosonde data and performs quality control.
+The only functionality provided by this package is the `bsod2.Sondeset` class, which retrieves radiosonde data ,performs quality control and plot a emagram.
 
 ### Basic `Sondeset` construction and methods
 
@@ -60,8 +74,12 @@ Most accessors return values with `metpy.units.units` attached.
 |`p`| ```units("hPa")```  | Pressure | `ss[0].p` |
 |`t`| ```units("degC")```| Temperature | `ss[0].tss` |
 |`rh`|```units("percents")```| Relative humidity | `ss[0].rh` |
+|`td`|`units("degC")`|dewpoint|`ss[0].td`|
 |`wd`|```units("deg")```| Wind direction | `ss[0].wd` |
 |`ws`| ```units("m/s")```| Wind speed | `ss[0].ws` |
+|`u`| ```units("m/s")```| U-component wind | `ss[0].u` |
+|`v`| ```units("m/s")```| V-component wind | `ss[0].v` |
+
 
 ### Get Number of profiles
 `len` function can be used to get number of profiles contained in  `Sondeset`.
@@ -113,6 +131,12 @@ Data variables:
     rh           (n, z) float64 128kB nan 89.21 89.78 90.21 ... nan nan nan nan
     launch_time  (n) datetime64[us] 64B 2024-06-18T06:01:42 ... 2024-06-18T14...
     time         (n, z) datetime64[ns] 128kB 2024-06-18T06:01:42 ... 2024-06-...
+```
+
+### plot emagram
+`plot_emagram` is a method for plotting a temperature emagram.
+```
+ss[0].plot_emagram(save_dir=Path("./"))
 ```
 
 ## Sample scripts

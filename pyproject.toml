@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bsod2"
-version = "0.3.0"
-description = "package for reading radiosonde data"
+version = "1.0.0"
+description = "package for reading and plotting radiosonde data"
 authors = [{name = "So Tomita"}]
 readme = "README.md"
 license = "GPL-3.0-only"
@@ -29,3 +29,6 @@ dependencies = [
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[project.scripts]
+bsod2 = "bsod2.cli:main"
