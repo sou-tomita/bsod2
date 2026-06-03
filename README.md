@@ -5,24 +5,27 @@
 <a href="https://github.com/sotomita/bsod2/actions/workflows/publish.yml"><img src="https://github.com/sotomita/bsod2/actions/workflows/publish.yml/badge.svg"></a>
 <img src="https://img.shields.io/pypi/dm/bsod2.svg?label=PyPI%20downloads">
 <img src="https://img.shields.io/github/license/sotomita/bsod2">
+<img src="https://img.shields.io/github/languages/code-size/sotomita/bsod2">
 <img src="https://img.shields.io/pypi/pyversions/bsod2.svg?logo=python&logoColor=white">
 </p>
 
-BSoD2(BalloonScope on Deck 2) is a package in Python for reading radiosonde data.
+BSoD2 (BalloonScope on Deck 2) is a command line interface and Python package for reading, processing, and plotting radiosonde data.
 
 ## Table of Contents <!-- omit in toc -->
 
 - [Installation](#installation)
 - [Usage](#usage)
-  - [Basic `Sondeset` construction and methods](#basic-sondeset-construction-and-methods)
-  - [Accessors for individual data items](#accessors-for-individual-data-items)
-  - [Get Number of profiles](#get-number-of-profiles)
-  - [Save as CSV](#save-as-csv)
-  - [Altitude or pressure interpolation](#altitude-or-pressure-interpolation)
-  - [Interpolated and combined `xarray.Dataset`](#interpolated-and-combined-xarraydataset)
-  - [plot emagram](#plot-emagram)
-- [Sample scripts](#sample-scripts)
-- [License](#license)
+  - [Command Line Interface](#command-line-interface)
+  - [Python module](#python-module)
+    - [Basic `Sondeset` construction and methods](#basic-sondeset-construction-and-methods)
+    - [Accessors for individual data items](#accessors-for-individual-data-items)
+    - [Get Number of profiles](#get-number-of-profiles)
+    - [Save as CSV](#save-as-csv)
+    - [Altitude or pressure interpolation](#altitude-or-pressure-interpolation)
+    - [Interpolated and combined `xarray.Dataset`](#interpolated-and-combined-xarraydataset)
+    - [plot emagram](#plot-emagram)
+  - [Sample scripts](#sample-scripts)
+  - [License](#license)
 
 ## Installation
 This package can be installed from [PyPI](https://pypi.org/project/bsod2/).
@@ -33,7 +36,19 @@ pip install bsod2
 ## Usage
 The only functionality provided by this package is the `bsod2.Sondeset` class, which retrieves radiosonde data ,performs quality control and plot a emagram.
 
-### Basic `Sondeset` construction and methods
+### Command Line Interface
+`bsod2` commannd performs on quality control.
+```
+$ bsod2 ./sample/Seisuimaru2407/raw_data ./output
+ 25%|███████              2/8 [00:01<00:03,  1.78it/s]
+```
+The first positional argument specifies the path to the input data file or directory.  
+The second one specifies the path to the output directory.  
+For more information, run: 
+```bsod2 --help```
+
+### Python module
+#### Basic `Sondeset` construction and methods
 
 Initialize the class with the file path to the raw data.
 ```
@@ -58,7 +73,7 @@ print(ss[0])
 >>> Sonde(sonde_no=1101771, launch_time=2024-06-18 06:01:42, product_name=iMS-100 , num_records=4174)
 ```
 
-### Accessors for individual data items
+#### Accessors for individual data items
 The following accessors can be used to access individual data items.   
 Most accessors return values with `metpy.units.units` attached.
 
@@ -81,20 +96,20 @@ Most accessors return values with `metpy.units.units` attached.
 |`v`| ```units("m/s")```| V-component wind | `ss[0].v` |
 
 
-### Get Number of profiles
+#### Get Number of profiles
 `len` function can be used to get number of profiles contained in  `Sondeset`.
 ```
 len(ss)
 >>> 8
 ```
 
-### Save as CSV
+#### Save as CSV
 Save the quality-controlled DataFrame as a CSV file to the specified file path using the `save_df` method.
 ```
 ss[0].save_df(Path("output.csv"))
 ```
 
-### Altitude or pressure interpolation
+#### Altitude or pressure interpolation
 Interpolate linearly onto an evenly spaced grid in pressure(`"p"`) or altitude(`"z"`) using the `interp` argument.
 ```
 ss = Sondeset(DIR_PATH,interp="p")
@@ -112,7 +127,7 @@ Values outside the original data range are filled with NaN. The range and resolu
 | `interp_zmax` | Maximum value of the interpolated height axis (m)                           | 20000   |
 | `interp_dz`   | Step size of the interpolated height axis (m)                               | 10      |
 
-### Interpolated and combined `xarray.Dataset`
+#### Interpolated and combined `xarray.Dataset`
 `Sondeset.ds` provides access to an `xarray.Dataset` containing interpolated and combined radiosonde data.
 ```
 ss = Sondeset(Path("Seisuimaru2407/raw_data", interp="z"))
@@ -133,17 +148,17 @@ Data variables:
     time         (n, z) datetime64[ns] 128kB 2024-06-18T06:01:42 ... 2024-06-...
 ```
 
-### plot emagram
+#### plot emagram
 `plot_emagram` is a method for plotting a temperature emagram.
 ```
 ss[0].plot_emagram(save_dir=Path("./"))
 ```
 
-## Sample scripts
+### Sample scripts
 
 See [sample/sample.md](sample/sample.md) for sample scripts.
 
 
-## License
+### License
 This project is distributed under the terms of the GNU General Public License, Version 3 (GPLv3).  
 See the [LICENSE](LICENSE) file for details.
